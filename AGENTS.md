@@ -8,6 +8,7 @@
 
 - Read `README.md`, `ai-assist-platform-context.md`, and the provider sections in `../ai-assist-architecture/ai-workflow-assistant-platform-architecture-spec.md` before changing behavior.
 - Use injected client boundaries. Do not call real OpenAI APIs in unit tests.
+- Use Python stdlib tooling unless a task explicitly requires package dependencies.
 - Do not store provider keys. Decrypted keys should only pass through authorized provider-call paths.
 - Do not log prompts, document context, model responses, provider keys, authorization headers, or raw provider errors that may contain sensitive content.
 - Normalize provider errors to stable categories such as invalid credential, quota, rate limited, unavailable, context too large, policy blocked, and unknown provider error.
@@ -15,8 +16,7 @@
 
 ## Commands
 
-- Run tests with `node --test`.
-- `npm` may not be available in this environment; prefer the direct Node command.
+- Run tests with `PYTHONPATH=src python3 -m unittest discover -s test`.
 
 ## Review Notes
 
