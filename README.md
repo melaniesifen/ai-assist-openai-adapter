@@ -6,8 +6,9 @@ This package owns OpenAI-specific credential validation, generation request mapp
 
 ## Current Boundary
 
-- Runtime: Python 3 stdlib package layout under `src/ai_assist_openai_adapter`.
-- Tests: stdlib `unittest`.
+- Runtime: Python 3 package layout under `src/ai_assist_openai_adapter`.
+- Package metadata: `pyproject.toml` with setuptools package discovery and no runtime dependencies.
+- Tests: stdlib `unittest` under `tests/`.
 - Network: no direct provider calls in this bootstrap.
 - Provider access: injected client only.
 - Logging: metadata allow-list only; raw prompts, message content, provider keys, tokens, model outputs, and raw provider errors are rejected from adapter logs.
@@ -53,10 +54,16 @@ Implementation tasks are tracked in [TASKS.md](TASKS.md). Update the checkboxes 
 
 ## Testing And Coverage
 
-Run the unit tests with either command:
+Run the unit tests with `PYTHONPATH=src` so the package is imported from the source tree:
 
 ```sh
-PYTHONPATH=src python3 -m unittest discover -s test
+PYTHONPATH=src python3 -m unittest discover -s tests
 ```
 
-No repo-local third-party dependencies are required for the current tests. If later tooling writes HTML, LCOV, TAP, JUnit, or build output, those generated paths are ignored by `.gitignore`.
+Run the compile check with:
+
+```sh
+python3 -m compileall -q src tests
+```
+
+No repo-local third-party dependencies are required for the current tests. If later tooling writes HTML, LCOV, TAP, JUnit, bytecode caches, or build output, those generated paths are ignored by `.gitignore`.

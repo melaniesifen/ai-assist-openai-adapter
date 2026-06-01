@@ -16,6 +16,7 @@ Relevant design sources: provider adapter section in `../ai-assist-architecture/
 - [x] Port unit tests from `node:test` to Python stdlib `unittest`.
 - [x] Document tests and coverage commands.
 - [x] Ignore local prompts, feedback, coverage output, dependencies, and build artifacts.
+- [x] Standardize Python layout to `src/ai_assist_openai_adapter/` and `tests/`, with package metadata in `pyproject.toml`.
 
 ## Architecture Tasks
 
