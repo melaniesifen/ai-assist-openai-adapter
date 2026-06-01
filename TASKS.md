@@ -5,20 +5,21 @@ Update this file as implementation progresses. Check off completed tasks in the 
 Canonical cross-repo source: `../ai-assist-architecture/implementation-task-breakdown.md`.
 Relevant design sources: provider adapter section in `../ai-assist-architecture/ai-workflow-assistant-platform-architecture-spec.md`, `../ai-assist-architecture/lld-auth-secrets-tenancy.md`, and `../ai-assist-architecture/lld-operations-safety.md`.
 
-## Completed Bootstrap
+## Completed Bootstrap And Migration
 
-- [x] Create dependency-light ESM package.
+- [x] Create the initial temporary dependency-light Node.js ESM package.
+- [x] Replace the temporary Node.js ESM bootstrap with the current Python stdlib package layout.
 - [x] Implement injected OpenAI client boundary.
 - [x] Implement credential validation wrapper.
 - [x] Implement generation and stream normalization.
 - [x] Implement usage/error normalization and safe logging helper.
-- [x] Add unit tests using `node:test`.
+- [x] Port unit tests from `node:test` to Python stdlib `unittest`.
 - [x] Document tests and coverage commands.
 - [x] Ignore local prompts, feedback, coverage output, dependencies, and build artifacts.
 
 ## Architecture Tasks
 
-- [ ] REPO-001: Decide final language, runtime, package manager, and package/module layout for this adapter; distinguish current Node.js ESM bootstrap from production shape.
+- [ ] REPO-001: Decide final language, runtime, package manager, and package/module layout for this adapter; distinguish the completed temporary Node.js ESM bootstrap history and current Python REPO-002 state from the final production shape.
 - [x] REPO-002: Migrate this adapter from the temporary Node.js ESM bootstrap to Python, preserving or intentionally superseding current validation, generation, streaming, usage normalization, error normalization, safe logging, and tests.
 - Migration gate satisfied for this repo by the Python stdlib package migration; REPO-001 remains open for final package manager and published package/module decisions.
 - [ ] PROVIDER-001: Align the local adapter contract with the shared provider interface from `ai-assist-contracts` once published.
@@ -30,7 +31,7 @@ Relevant design sources: provider adapter section in `../ai-assist-architecture/
 - [ ] PROVIDER-002: Document and implement OpenAI credential-validation retry bounds and rate-limit behavior.
 - [x] PROVIDER-002: Normalize OpenAI streaming deltas into provider-neutral stream output in the bootstrap adapter.
 - [x] PROVIDER-002: Return usage metadata without logging raw prompts, context, model responses, or provider keys.
-- [ ] PROVIDER-002: Normalize OpenAI quota, auth, model, timeout, and provider rate-limit failures to the shared error categories.
+- [ ] PROVIDER-002: Normalize OpenAI quota, auth, model, timeout, context-too-large, policy-blocked, and provider rate-limit failures to the shared error categories.
 - [ ] PROVIDER-004: Surface expired or missing `SessionSecrets` as re-enter-key provider errors without attempting provider calls.
 - [ ] PROVIDER-004: Return typed provider failures suitable for orchestration to emit through `SessionEvent` errors.
 - [ ] AUTH-005: Support safe backend provider-key validation through this adapter without storing raw keys or logging raw provider errors.
