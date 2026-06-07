@@ -280,7 +280,17 @@ def _stream_error_event(model, error):
         "type": STREAM_EVENT_TYPES["ERROR"],
         "provider": PROVIDER,
         "model": model,
-        "error": error,
+        "error": _provider_contract_error(error),
+    }
+
+
+def _provider_contract_error(error):
+    raw = error if isinstance(error, Mapping) else {}
+    return {
+        "category": raw.get("category") or "unavailable",
+        "code": raw.get("code") or ERROR_CODES["UNKNOWN_PROVIDER_ERROR"],
+        "message": raw.get("message") or raw.get("safeMessage") or "Provider request failed.",
+        "dependencyStatus": raw.get("dependencyStatus") or "failed",
     }
 
 

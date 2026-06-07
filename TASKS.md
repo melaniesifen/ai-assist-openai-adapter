@@ -32,12 +32,21 @@ Relevant design sources: provider adapter section in `../ai-assist-architecture/
 - [ ] PROVIDER-002: Document and implement OpenAI credential-validation retry bounds and rate-limit behavior.
 - [x] PROVIDER-002: Normalize OpenAI streaming deltas into provider-neutral stream output in the bootstrap adapter.
 - [x] PROVIDER-002: Return usage metadata without logging raw prompts, context, model responses, or provider keys.
-- [ ] PROVIDER-002: Normalize OpenAI quota, auth, model, timeout, context-too-large, policy-blocked, and provider rate-limit failures to the shared error categories.
+- [x] PROVIDER-002: Normalize OpenAI quota, auth, model, timeout, context-too-large, policy-blocked, and provider rate-limit failures to the shared error categories.
 - [ ] PROVIDER-004: Surface expired or missing `SessionSecrets` as re-enter-key provider errors without attempting provider calls.
 - [ ] PROVIDER-004: Return typed provider failures suitable for orchestration to emit through `SessionEvent` errors.
 - [ ] AUTH-005: Support safe backend provider-key validation through this adapter without storing raw keys or logging raw provider errors.
-- [ ] OPS-003: Verify metadata-only logging against the operations LLD allow-list and forbidden-field list.
-- [ ] SAFE-003: Verify this adapter does not retain raw prompts, document context, model responses, screenshots, OCR text, accessibility trees, provider keys, or decrypted action payloads.
+- [x] OPS-003: Verify metadata-only logging against the operations LLD allow-list and forbidden-field list.
+- [x] SAFE-003: Verify this adapter does not retain raw prompts, document context, model responses, screenshots, OCR text, accessibility trees, provider keys, or decrypted action payloads.
+
+## M5 Provider Adapter Stream Contract Evidence
+
+- [x] M5-T4.1 OpenAI fake stream tests cover deterministic deltas, final response metadata, usage metadata, and safe errors without real provider calls.
+- [x] M5-T4.3 OpenAI stream output uses provider-neutral event names: `assistant.delta`, `assistant.final`, and `error`; OpenAI error categories align to platform-safe contract/orchestration categories.
+- [x] M5-T4.4 OpenAI tests verify metadata-only logging excludes raw prompts, model response bodies, provider keys, and secret material.
+- [x] M5-T4.5 OpenAI adapter `TASKS.md` updated for M5-T4 OpenAI evidence. Anthropic evidence remains owned by the Anthropic adapter worker.
+- [x] M5-T4.6 OpenAI adapter tests and compile checks passed after review feedback was resolved.
+- [x] M5-T4.7 Fresh review feedback was written for the current OpenAI diff and the blocking contract-category finding was resolved.
 
 ## E2E-Owned Validation Support
 

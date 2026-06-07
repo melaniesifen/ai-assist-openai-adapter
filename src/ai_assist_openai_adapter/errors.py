@@ -6,6 +6,8 @@ QUOTA_CODES = frozenset({"insufficient_quota", "quota_exceeded", "billing_hard_l
 INVALID_CREDENTIAL_CODES = frozenset({"invalid_api_key", "invalid_credential", "authentication_error"})
 POLICY_CODES = frozenset({"content_policy_violation", "policy_violation", "safety_violation"})
 CONTEXT_CODES = frozenset({"context_length_exceeded", "context_too_large", "maximum_context_length_exceeded"})
+MODEL_VALIDATION_CODES = frozenset({"model_not_found", "model_unavailable", "invalid_model", "model_not_supported"})
+TIMEOUT_CODES = frozenset({"timeout", "request_timeout", "rate_limit_timeout"})
 UNAVAILABLE_STATUS_CODES = frozenset({408, 500, 502, 503, 504, 529})
 
 
@@ -21,6 +23,7 @@ def validation_error(code, safe_message):
         "category": ERROR_CATEGORIES["VALIDATION"],
         "code": code,
         "retryable": False,
+        "message": safe_message,
         "safeMessage": safe_message,
     }
 
@@ -31,6 +34,7 @@ def invalid_credential_error():
         "category": ERROR_CATEGORIES["AUTHENTICATION"],
         "code": ERROR_CODES["INVALID_CREDENTIAL"],
         "retryable": False,
+        "message": "Provider credential is invalid or expired.",
         "safeMessage": "Provider credential is invalid or expired.",
     }
 
@@ -41,6 +45,7 @@ def client_configuration_error():
         "category": ERROR_CATEGORIES["INTERNAL"],
         "code": ERROR_CODES["ADAPTER_CLIENT_INVALID"],
         "retryable": False,
+        "message": "Provider adapter client is not configured correctly.",
         "safeMessage": "Provider adapter client is not configured correctly.",
     }
 
@@ -101,12 +106,32 @@ def map_provider_error(error):
             provider_signal,
         )
 
+    if provider_signal in MODEL_VALIDATION_CODES or status_code == 404:
+        return _normalized(
+            ERROR_CATEGORIES["MODEL_UNAVAILABLE"],
+            ERROR_CODES["PROVIDER_VALIDATION_ERROR"],
+            False,
+            "Provider rejected the request shape.",
+            status_code,
+            provider_signal,
+        )
+
     if status_code == 400:
         return _normalized(
             ERROR_CATEGORIES["VALIDATION"],
             ERROR_CODES["PROVIDER_VALIDATION_ERROR"],
             False,
             "Provider rejected the request shape.",
+            status_code,
+            provider_signal,
+        )
+
+    if provider_signal in TIMEOUT_CODES:
+        return _normalized(
+            ERROR_CATEGORIES["TIMEOUT"],
+            ERROR_CODES["PROVIDER_UNAVAILABLE"],
+            True,
+            "Provider is temporarily unavailable.",
             status_code,
             provider_signal,
         )
@@ -137,6 +162,7 @@ def _normalized(category, code, retryable, safe_message, status_code, provider_s
         "category": category,
         "code": code,
         "retryable": retryable,
+        "message": safe_message,
         "safeMessage": safe_message,
         "providerStatusCode": status_code if isinstance(status_code, int) else None,
         "providerErrorSignal": provider_signal or None,
