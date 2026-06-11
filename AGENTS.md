@@ -10,6 +10,7 @@
 - Use injected client boundaries. Do not call real OpenAI APIs in unit tests.
 - Use Python stdlib tooling unless a task explicitly requires package dependencies.
 - Keep source under `src/ai_assist_openai_adapter/` and unit tests under `tests/`.
+- Keep test files focused by source responsibility where practical. Put reused fake clients, constants, fixtures, and assertions in `tests/common.py`.
 - Do not store provider keys. Decrypted keys should only pass through authorized provider-call paths.
 - Do not log prompts, document context, model responses, provider keys, authorization headers, or raw provider errors that may contain sensitive content.
 - Normalize provider errors to stable categories such as invalid credential, quota, rate limited, unavailable, context too large, policy blocked, and unknown provider error.
