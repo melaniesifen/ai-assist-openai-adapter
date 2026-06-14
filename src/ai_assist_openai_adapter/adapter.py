@@ -4,6 +4,7 @@ from collections.abc import AsyncIterable, Iterable, Mapping
 from .constants import CAPABILITIES, ERROR_CODES, PROVIDER, STREAM_EVENT_TYPES
 from .errors import client_configuration_error, invalid_credential_error, map_provider_error, validation_error
 from .logging import create_safe_logger
+from .provider_access import provider_access_error, provider_access_from_request, to_client_access_fields
 from .usage import normalize_usage
 
 SUPPORTED_MESSAGE_ROLES = frozenset({"system", "user", "assistant"})
@@ -122,8 +123,9 @@ def _validate_credential_value(credential):
 
 
 def _validate_generate_request(request):
+    access_error = provider_access_error(provider_access_from_request(request))
     return (
-        _validate_credential_value(request.get("credential"))
+        access_error
         or (
             validation_error(ERROR_CODES["MISSING_MODEL"], "Provider model is required.")
             if not isinstance(request.get("model"), str) or len(request["model"].strip()) == 0
@@ -192,9 +194,9 @@ def _build_log_metadata(operation, request):
 
 
 def _to_openai_request(request, stream):
+    access = provider_access_from_request(request)
     return {
         "provider": PROVIDER,
-        "credential": request["credential"],
         "model": request["model"],
         "messages": request["messages"],
         "temperature": request.get("temperature"),
@@ -202,6 +204,7 @@ def _to_openai_request(request, stream):
         "stream": stream,
         "requestId": request.get("requestId"),
         "correlationId": request.get("correlationId"),
+        **to_client_access_fields(access),
     }
 
 

@@ -30,6 +30,7 @@ Relevant design sources: provider adapter section in `../ai-assist-architecture/
 - [ ] PROVIDER-001: Add integration tests against the published provider contract and an OpenAI-compatible fake for validation, generate, stream, usage, and normalized errors.
 - [ ] PROVIDER-002: Add a production OpenAI SDK or HTTP client wrapper behind the injected boundary.
 - [ ] PROVIDER-002: Document and implement OpenAI credential-validation retry bounds and rate-limit behavior.
+- [x] PROVIDER-002: Support platform-owned provider access metadata as the default generation and stream path without requiring user-pasted credentials.
 - [x] PROVIDER-002: Normalize OpenAI streaming deltas into provider-neutral stream output in the bootstrap adapter.
 - [x] PROVIDER-002: Return usage metadata without logging raw prompts, context, model responses, or provider keys.
 - [x] PROVIDER-002: Normalize OpenAI quota, auth, model, timeout, context-too-large, policy-blocked, and provider rate-limit failures to the shared error categories.
@@ -52,8 +53,16 @@ Relevant design sources: provider adapter section in `../ai-assist-architecture/
 
 - [ ] E2E-001: Provide testable OpenAI key-validation behavior for onboarding without raw key leakage in logs.
 - [ ] E2E-002: Provide testable OpenAI generate/stream behavior for the read/context/generate path.
-- [ ] E2E-005: Provide test hooks or fixtures for provider quota, rate-limit, timeout, expired-secret, and metadata-only logging scenarios.
+- [x] E2E-005: Provide test hooks or fixtures for provider quota, rate-limit, timeout, missing access, optional BYO, platform access, and metadata-only logging scenarios.
 - [ ] E2E-005: Validate OpenAI outage, quota exhaustion, timeout, invalid model, invalid key, and provider rate-limit failure modes without raw prompt or key logging.
+
+## M8 Provider Access Evidence
+
+- [x] M8-T4.1: OpenAI adapter accepts platform-owned provider access metadata for generation and streaming without user-pasted credentials.
+- [x] M8-T4.2: OpenAI provider status helper reports available, unavailable, misconfigured, quota-limited, and optional BYO states without secrets.
+- [x] M8-T4.3: BYO credential handling remains explicit and optional; missing provider access fails closed.
+- [x] M8-T4.4: Existing stream/error wrappers plus new tests cover timeout, rate-limit, auth, quota, empty stream, successful stream, and metadata-only logging.
+- [x] M8-T4.7: Added provider-access tests for platform access, optional BYO, missing access, status metadata, and safe logs.
 
 ## Quality Tasks
 

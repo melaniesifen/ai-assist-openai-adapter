@@ -10,10 +10,15 @@ This package owns OpenAI-specific credential validation, generation request mapp
 - Package metadata: `pyproject.toml` with setuptools package discovery and no runtime dependencies.
 - Tests: stdlib `unittest` under `tests/`.
 - Network: no direct provider calls in this bootstrap.
-- Provider access: injected client only.
+- Provider access: injected client only. Platform-owned provider access is the
+  default when configured; BYO credentials are optional and advanced.
 - Logging: metadata allow-list only; raw prompts, message content, provider keys, tokens, model outputs, and raw provider errors are rejected from adapter logs.
 
-The orchestration service should pass a decrypted short-lived session secret to this adapter only for the duration of a provider call. The adapter never stores the credential and never returns it.
+The orchestration service should pass platform-owned provider access metadata by
+default. If BYO provider keys are enabled for a trusted user, orchestration may
+pass a decrypted short-lived session secret to this adapter only for the
+duration of a provider call. The adapter never stores the credential and never
+returns it.
 
 ## Public Shape
 
@@ -28,11 +33,13 @@ adapter = create_openai_adapter(
 Adapter methods:
 
 - `await validate_credential({ "credential": credential, "requestId": request_id, "correlationId": correlation_id })`
-- `await generate({ "credential": credential, "model": model, "messages": messages, "temperature": temperature, "maxOutputTokens": max_output_tokens, "requestId": request_id, "correlationId": correlation_id })`
-- `stream({ "credential": credential, "model": model, "messages": messages, "temperature": temperature, "maxOutputTokens": max_output_tokens, "requestId": request_id, "correlationId": correlation_id })`
+- `await generate({ "providerAccess": { "source": "platform", "reference": secret_reference }, "model": model, "messages": messages, "temperature": temperature, "maxOutputTokens": max_output_tokens, "requestId": request_id, "correlationId": correlation_id })`
+- `stream({ "providerAccess": { "source": "platform", "reference": secret_reference }, "model": model, "messages": messages, "temperature": temperature, "maxOutputTokens": max_output_tokens, "requestId": request_id, "correlationId": correlation_id })`
 - `get_capabilities()`
 
 All provider responses are normalized to platform-facing shapes. Provider errors are mapped to stable categories and safe codes before being returned or logged.
+Existing BYO validation calls may still pass a `credential`, but that path is
+not required for the default trusted-user flow.
 
 ## Future SDK/HTTP Adapter
 
