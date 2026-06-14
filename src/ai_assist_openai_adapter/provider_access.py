@@ -31,7 +31,13 @@ def provider_access_from_request(request):
     if isinstance(access, Mapping):
         source = access.get("source")
         if source == ACCESS_SOURCE_PLATFORM:
-            return {"source": ACCESS_SOURCE_PLATFORM, "reference": access.get("reference")}
+            reference = access.get("reference")
+            if isinstance(reference, str) and reference.strip():
+                return {"source": ACCESS_SOURCE_PLATFORM, "reference": reference}
+            return {
+                "source": ACCESS_SOURCE_PLATFORM,
+                "error": validation_error(ERROR_CODES["MISSING_CREDENTIAL"], "Platform provider access is not configured."),
+            }
         if source == ACCESS_SOURCE_BYO:
             credential = access.get("credential") or request.get("credential")
             if isinstance(credential, str) and credential.strip():

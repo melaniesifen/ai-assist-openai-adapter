@@ -1,7 +1,7 @@
 import unittest
 
 from ai_assist_openai_adapter import PROVIDER, sanitize_log_fields
-from common import TEST_CREDENTIAL
+from tests.common import TEST_CREDENTIAL
 
 
 class OpenAiLoggingTest(unittest.TestCase):

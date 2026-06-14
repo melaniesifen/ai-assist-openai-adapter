@@ -1,7 +1,7 @@
 import unittest
 
 from ai_assist_openai_adapter import ERROR_CODES, create_openai_adapter
-from common import CaptureLogger, FakeClient, ProviderFailure, TEST_CREDENTIAL
+from tests.common import CaptureLogger, FakeClient, ProviderFailure, TEST_CREDENTIAL
 
 
 class OpenAiCredentialValidationTest(unittest.IsolatedAsyncioTestCase):

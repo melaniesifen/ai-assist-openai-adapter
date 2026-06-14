@@ -9,6 +9,23 @@ CONTEXT_CODES = frozenset({"context_length_exceeded", "context_too_large", "maxi
 MODEL_VALIDATION_CODES = frozenset({"model_not_found", "model_unavailable", "invalid_model", "model_not_supported"})
 TIMEOUT_CODES = frozenset({"timeout", "request_timeout", "rate_limit_timeout"})
 UNAVAILABLE_STATUS_CODES = frozenset({408, 500, 502, 503, 504, 529})
+ACCESS_DENIED_CODES = frozenset(
+    {
+        "access_denied",
+        "authorization_error",
+        "kms_access_denied",
+        "provider_access_denied",
+        "secret_access_denied",
+    }
+)
+ACCESS_UNAVAILABLE_CODES = frozenset(
+    {
+        "kms_decrypt_failed",
+        "secret_decrypt_failed",
+        "secret_not_found",
+        "secret_unavailable",
+    }
+)
 
 
 class ProviderAdapterError(Exception):
@@ -55,6 +72,26 @@ def map_provider_error(error):
     provider_code = _lower_text(_dig(error, "code") or _dig(error, "type") or _dig(error, "error", "code") or _dig(error, "error", "type"))
     provider_type = _lower_text(_dig(error, "type") or _dig(error, "error", "type"))
     provider_signal = provider_code or provider_type
+
+    if provider_signal in ACCESS_DENIED_CODES:
+        return _normalized(
+            ERROR_CATEGORIES["AUTHORIZATION"],
+            ERROR_CODES["PROVIDER_ACCESS_DENIED"],
+            False,
+            "Provider access is not authorized.",
+            status_code,
+            provider_signal,
+        )
+
+    if provider_signal in ACCESS_UNAVAILABLE_CODES:
+        return _normalized(
+            ERROR_CATEGORIES["DEPENDENCY"],
+            ERROR_CODES["PROVIDER_ACCESS_UNAVAILABLE"],
+            True,
+            "Provider access is temporarily unavailable.",
+            status_code,
+            provider_signal,
+        )
 
     if status_code in {401, 403} or provider_signal in INVALID_CREDENTIAL_CODES:
         return _normalized(

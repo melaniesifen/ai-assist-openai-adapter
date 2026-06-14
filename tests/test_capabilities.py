@@ -1,7 +1,7 @@
 import unittest
 
 from ai_assist_openai_adapter import PROVIDER, create_openai_adapter
-from common import FakeClient
+from tests.common import FakeClient
 
 
 class OpenAiCapabilitiesTest(unittest.TestCase):

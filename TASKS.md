@@ -64,6 +64,13 @@ Relevant design sources: provider adapter section in `../ai-assist-architecture/
 - [x] M8-T4.4: Existing stream/error wrappers plus new tests cover timeout, rate-limit, auth, quota, empty stream, successful stream, and metadata-only logging.
 - [x] M8-T4.7: Added provider-access tests for platform access, optional BYO, missing access, status metadata, and safe logs.
 
+## M9 Provider Access Evidence
+
+- [x] M9-T4.4: OpenAI adapter deployed-shaped request and stream behavior stays behind the injected client, defaults to platform-owned access when supplied, fails closed on missing platform secret references, maps invalid credentials, quota, rate-limit, timeout, access-denied, and access-unavailable errors to safe categories/codes, handles empty or unknown terminal streams, and emits metadata-only logs.
+- [x] M9-T4.7: Focused fake-backed tests cover missing provider access, missing platform secret reference, secret access denial, KMS/secret access unavailability, invalid provider credential/config, quota/rate-limit, timeout, successful stream, empty/unknown terminal stream, optional BYO access, and safe logging without real OpenAI calls.
+- [x] M9-T4.9: Run OpenAI adapter unit and compile checks for this M9-T4 slice.
+- [x] M9-T4.10: Write fresh review feedback for the current OpenAI adapter diff and resolve or document findings before commit.
+
 ## Quality Tasks
 
 - [ ] Raise line coverage to at least 95%.

@@ -3,7 +3,7 @@ import io
 import unittest
 
 from ai_assist_openai_adapter import ERROR_CODES, create_openai_adapter
-from common import (
+from tests.common import (
     CaptureLogger,
     FakeClient,
     ProviderFailure,

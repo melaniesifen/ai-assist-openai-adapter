@@ -1,7 +1,7 @@
 import unittest
 
 from ai_assist_openai_adapter import ERROR_CATEGORIES, ERROR_CODES, PROVIDER, create_openai_adapter
-from common import (
+from tests.common import (
     CaptureLogger,
     FakeClient,
     PROVIDER_NEUTRAL_DELTA_FIELDS,
